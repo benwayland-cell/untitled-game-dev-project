@@ -8,51 +8,72 @@ extends CharacterBody2D
 
 @export var sword_cooldown_time :float= 0.1
 
+@export var dash_velocity :int= 800
+@export var dash_time :float= 0.1
+@export var dash_cooldown :float= 0.2
+
 # abililities unlocked
 var has_sword :bool= false
 var has_double_jump_ability :bool= false
+var has_dash :bool= false
 
-enum PlayerState {ON_GROUND, JUMPING, FALLING}
+enum PlayerState {ON_GROUND, JUMPING, FALLING, DASHING}
+enum PlayerLeftRight {LEFT, RIGHT}
 
 var player_state := PlayerState.FALLING
+var player_left_right_state := PlayerLeftRight.RIGHT
 var left_right_direction :int= 0
 
 var sword_cooldown_done :bool= true
 var can_double_jump :bool= true
+var can_dash :bool= true
+var dash_time_done :bool= true
+
 
 func _process(delta: float) -> void:
 	_update_player_state()
+	_handle_jumping()
 	_handle_left_right(delta)
 	_handle_grav(delta)
-	_handle_jumping()
 	_handle_sword()
-	_handle_debug()
+	_handle_dash(delta)
 	_handle_animation()
+	_handle_debug()
 	
 	%Sword.get_overlapping_bodies()
 	
 	move_and_slide()
 
+
 func _handle_animation() -> void:
 	# flip the sword's position depending on which way we're going
 	if (%Sword.visible): # don't change it when it's visible
 		return
-	if left_right_direction == -1:
+	if player_left_right_state == PlayerLeftRight.LEFT:
 		%Sword.position = -abs(%Sword.position)
-	elif left_right_direction == 1:
+	elif player_left_right_state == PlayerLeftRight.RIGHT:
 		%Sword.position = abs(%Sword.position)
 
+
 func _update_player_state() -> void:
+	# stay dashing if we are currently dashing
+	if player_state == PlayerState.DASHING and not dash_time_done and not is_on_wall():
+		return
+	
 	if (is_on_floor()):
 		player_state = PlayerState.ON_GROUND
 		can_double_jump = true
 	
 	# if the player has let go of the jump button and has reached the min_jump_velocity
 	# or they are falling
-	elif ((velocity.y < -min_jump_velocity and not Input.is_action_pressed("jump")) or velocity.y > 0):
+	elif ((velocity.y < -min_jump_velocity and not Input.is_action_pressed("jump")) or velocity.y >= 0):
 		player_state = PlayerState.FALLING
 
+
 func _handle_left_right(delta: float) -> void:
+	if player_state == PlayerState.DASHING:
+		return
+	
 	left_right_direction = 0
 	
 	if Input.is_action_pressed("left"):
@@ -61,6 +82,12 @@ func _handle_left_right(delta: float) -> void:
 		left_right_direction += 1
 	
 	velocity.x = left_right_direction * delta * speed
+	
+	# handle player_left_right_state
+	if left_right_direction == -1:
+		player_left_right_state = PlayerLeftRight.LEFT
+	elif left_right_direction == 1:
+		player_left_right_state = PlayerLeftRight.RIGHT
 
 
 func _handle_jumping() -> void:
@@ -77,14 +104,15 @@ func _handle_jumping() -> void:
 	if not can_jump:
 		return
 	
-	
+	# jump
 	velocity.y = -jump_velocity
 	player_state = PlayerState.JUMPING
-	
 
 
 func _handle_grav(delta: float) -> void:
-	if player_state == PlayerState.JUMPING:
+	if player_state == PlayerState.DASHING:
+		return
+	elif player_state == PlayerState.JUMPING:
 		velocity.y += jump_grav * delta
 	else:
 		velocity.y += fall_grav * delta
@@ -109,10 +137,36 @@ func _handle_sword() -> void:
 	sword_cooldown_done = true
 
 
+func _handle_dash(_delta: float) -> void:
+	if not (Input.is_action_just_pressed("dash") and can_dash and has_dash):
+		return
+	
+	# start dashing
+	player_state = PlayerState.DASHING
+	can_dash = false
+	if player_left_right_state == PlayerLeftRight.LEFT:
+		velocity = Vector2(-1 * dash_velocity, 0)
+	elif player_left_right_state == PlayerLeftRight.RIGHT:
+		velocity = Vector2(dash_velocity, 0)
+	
+	# wait for the dash to be done
+	dash_time_done = false
+	await get_tree().create_timer(dash_time).timeout
+	dash_time_done = true
+	
+	# wait for the dash cooldown to be done
+	await get_tree().create_timer(dash_cooldown).timeout
+	can_dash = true
+
 func _handle_debug() -> void:
 	if Input.is_action_just_pressed("debug 1"):
 		has_sword = !has_sword
 		print("Sword: " + str(has_sword))
+	
 	if Input.is_action_just_pressed("debug 2"):
 		has_double_jump_ability = !has_double_jump_ability
 		print("Double jump: " + str(has_double_jump_ability))
+	
+	if Input.is_action_just_pressed("debug 3"):
+		has_dash = !has_dash
+		print("Dash: " + str(has_dash))
