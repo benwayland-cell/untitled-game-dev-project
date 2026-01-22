@@ -1,6 +1,7 @@
 extends CharacterBody2D
+class_name Player
 
-@export var jump_grav :int= 500
+@export var jump_grav :int= 700
 @export var fall_grav :int= 1000
 @export var speed :int= 10000
 @export var jump_velocity :int= 300
@@ -28,6 +29,7 @@ var sword_cooldown_done :bool= true
 var can_double_jump :bool= true
 var can_dash :bool= true
 var dash_time_done :bool= true
+var dash_cooldown_done :bool= true
 
 
 func _process(delta: float) -> void:
@@ -138,6 +140,10 @@ func _handle_sword() -> void:
 
 
 func _handle_dash(_delta: float) -> void:
+	# allow us to dash 
+	if dash_cooldown_done and is_on_floor():
+		can_dash = true
+	
 	if not (Input.is_action_just_pressed("dash") and can_dash and has_dash):
 		return
 	
@@ -155,8 +161,10 @@ func _handle_dash(_delta: float) -> void:
 	dash_time_done = true
 	
 	# wait for the dash cooldown to be done
+	dash_cooldown_done = false
 	await get_tree().create_timer(dash_cooldown).timeout
-	can_dash = true
+	dash_cooldown_done = true
+
 
 func _handle_debug() -> void:
 	if Input.is_action_just_pressed("debug 1"):

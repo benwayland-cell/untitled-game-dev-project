@@ -1,4 +1,5 @@
 extends StaticBody2D
+class_name TestEnemy
 
 @export var health :int= 2
 
