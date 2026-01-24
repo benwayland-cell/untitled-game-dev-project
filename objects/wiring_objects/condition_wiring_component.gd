@@ -1,36 +1,36 @@
 extends WiringComponent
-class_name MergerConditionWiringComponent
+class_name ConditionWiringComponent
 
-var total_value : float = 0.0
 @export var comparison_value : float = 2.0
 @export_enum("greater","greater_equal","equal","less_equal","less") var condition = "greater_equal"
 @export var override_output_value : float = 0.0
 
-func recieve_input(value : float, _from : Wire):
-	total_value += value
+func recieve_input(value : float, from : Wire):
+	super(value,from)
+	var total_value = get_total_input()
 	match condition:
 		"greater":
 			if total_value > comparison_value: 
-				output_value = total_value
+				prep_output(total_value)
 				return
 		"greater_equal":
 			if total_value >= comparison_value: 
-				output_value = total_value
+				prep_output(total_value)
 				return
 		"equal":
 			if total_value == comparison_value: 
-				output_value = total_value
+				prep_output(total_value)
 				return
 		"less_equal":
 			if total_value <= comparison_value: 
-				output_value = total_value
+				prep_output(total_value)
 				return
 		"less":
 			if total_value < comparison_value: 
-				output_value = total_value
+				prep_output(total_value)
 				return
 	output_value = 0.0
 
-func prep_output():
+func prep_output(total_value : float):
 	if override_output_value: output_value = override_output_value
-	output_value = total_value
+	else: output_value = total_value

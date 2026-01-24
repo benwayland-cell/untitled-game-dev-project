@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://d2js6mxvojhj4"]
+
+[ext_resource type="Script" uid="uid://owhw76dfts0r" path="res://objects/wiring_objects/button_wiring_component.gd" id="1_irwpu"]
+[ext_resource type="Texture2D" uid="uid://bfti1kuomulq8" path="res://icon.svg" id="2_6aj4x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6tty1"]
+size = Vector2(128.00002, 81.14107)
+
+[node name="ButtonWiringComponent" type="Node2D" node_paths=PackedStringArray("output_position_node")]
+script = ExtResource("1_irwpu")
+output_position_node = NodePath("Output")
+metadata/_custom_type_script = "uid://owhw76dfts0r"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="ButtonFrame" type="Sprite2D" parent="StaticBody2D"]
+self_modulate = Color(0.4351923, 0.43519226, 0.43519226, 1)
+position = Vector2(-5.9604645e-07, -0.68)
+scale = Vector2(0.09374999, 0.020624999)
+texture = ExtResource("2_6aj4x")
+
+[node name="Button" type="Sprite2D" parent="StaticBody2D/ButtonFrame"]
+self_modulate = Color(1.8916494, 0, 0, 1)
+z_index = -1
+position = Vector2(4.2915344e-06, -74.24242)
+scale = Vector2(0.49999997, 0.5975377)
+texture = ExtResource("2_6aj4x")
+
+[node name="Area2D" type="Area2D" parent="StaticBody2D/ButtonFrame/Button"]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/ButtonFrame/Button/Area2D"]
+position = Vector2(6.675722e-06, -104.57057)
+scale = Vector2(1, 1.0000002)
+shape = SubResource("RectangleShape2D_6tty1")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(7, 0, 4, -2, -4, -2, -7, 0)
+
+[node name="Output" type="Node2D" parent="."]
+position = Vector2(0, 10)
+
+[connection signal="body_entered" from="StaticBody2D/ButtonFrame/Button/Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="StaticBody2D/ButtonFrame/Button/Area2D" to="." method="_on_area_2d_body_exited"]

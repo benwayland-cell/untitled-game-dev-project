@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=4 uid="uid://dbwbbc6aj25xc"]
+
+[ext_resource type="PackedScene" uid="uid://bkheuco5fglkp" path="res://tile_map.tscn" id="1_g5xp7"]
+[ext_resource type="PackedScene" uid="uid://cddi0r54m7fcc" path="res://player/player.tscn" id="2_wsf8r"]
+[ext_resource type="PackedScene" uid="uid://b7k2g55q7p1r" path="res://enemies/test_enemy.tscn" id="3_f077g"]
+[ext_resource type="PackedScene" uid="uid://d2js6mxvojhj4" path="res://button_wiring_component.tscn" id="3_wsf8r"]
+[ext_resource type="Script" uid="uid://bhxko7cm6wc43" path="res://objects/wiring_objects/wire.gd" id="5_josim"]
+[ext_resource type="Script" uid="uid://6xv1ogkfd8da" path="res://objects/wiring_objects/print_wiring_component.gd" id="6_hddxl"]
+
+[node name="Test Level" type="Node2D"]
+
+[node name="ButtonWiringComponent" parent="." instance=ExtResource("3_wsf8r")]
+position = Vector2(52, 64)
+
+[node name="TileMapLayer" parent="." instance=ExtResource("1_g5xp7")]
+position = Vector2(1, 0)
+tile_map_data = PackedByteArray("AAD6/wIAAgAAAAAAAAD7/wIAAgAAAAAAAAD8/wIAAgAAAAAAAAD9/wIAAgAAAAAAAAD9/wMAAgAAAAAAAAD9/wQAAgAAAAAAAAD+/wQAAgAAAAAAAAD//wQAAgAAAAAAAAAAAAQAAgAAAAAAAAABAAQAAgAAAAAAAAACAAQAAgAAAAAAAAADAAQAAgAAAAAAAAAEAAQAAgAAAAAAAAAFAAQAAgAAAAAAAAAGAAQAAgAAAAAAAAAHAAQAAgAAAAAAAAAIAAQAAgAAAAAAAAAJAAQAAgAAAAAAAAAKAAQAAgAAAAAAAAALAAQAAgAAAAAAAAAMAAQAAgAAAAAAAAAMAAMAAgAAAAAAAAAMAAIAAgAAAAAAAAAMAAEAAgAAAAAAAAANAAEAAgAAAAAAAAAOAAEAAgAAAAAAAAAPAAEAAgAAAAAAAAAQAAEAAgAAAAAAAAARAAEAAgAAAAAAAAARAAAAAgAAAAAAAAARAP//AgAAAAAAAAARAP7/AgAAAAAAAAASAP7/AgAAAAAAAAATAP7/AgAAAAAAAAAUAP7/AgAAAAAAAAAVAP7/AgAAAAAAAAAWAP7/AgAAAAAAAAA=")
+
+[node name="Player" parent="." instance=ExtResource("2_wsf8r")]
+position = Vector2(28, 28)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(132, 0)
+zoom = Vector2(2, 2)
+
+[node name="TestEnemy" parent="." instance=ExtResource("3_f077g")]
+position = Vector2(217, 8)
+
+[node name="Wire" type="Line2D" parent="." node_paths=PackedStringArray("output", "input")]
+points = PackedVector2Array(52, 74, 202, 40)
+default_color = Color(0, 0, 0, 1)
+script = ExtResource("5_josim")
+output = NodePath("../ButtonWiringComponent")
+input = NodePath("../PrintWiringComponent")
+metadata/_custom_type_script = "uid://bhxko7cm6wc43"
+metadata/_edit_lock_ = true
+
+[node name="PrintWiringComponent" type="Node2D" parent="."]
+position = Vector2(202, 40)
+script = ExtResource("6_hddxl")
+metadata/_custom_type_script = "uid://6xv1ogkfd8da"

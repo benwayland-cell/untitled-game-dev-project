@@ -8,7 +8,9 @@ func _ready() -> void:
 	super()
 	if output_on_ready: output_value = true_output_value
 
-func recieve_input(value : float, _from : Wire):
+func recieve_input(value : float, from : Wire):
+	super(value,from)
+	var total_value := get_total_input()
 	output_on_ready = false
-	if value: output_value = 0
+	if total_value: output_value = 0
 	else: output_value = true_output_value
