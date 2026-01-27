@@ -1,0 +1,60 @@
+[gd_scene format=4 uid="uid://dbwbbc6aj25xc"]
+
+[ext_resource type="PackedScene" uid="uid://bkheuco5fglkp" path="res://tile_map.tscn" id="1_g5xp7"]
+[ext_resource type="PackedScene" uid="uid://cddi0r54m7fcc" path="res://player/player.tscn" id="2_wsf8r"]
+[ext_resource type="PackedScene" uid="uid://b7k2g55q7p1r" path="res://enemies/test_enemy.tscn" id="3_f077g"]
+[ext_resource type="PackedScene" uid="uid://d2js6mxvojhj4" path="res://scenes/wiring_component_scenes/button_wiring_component.tscn" id="3_wsf8r"]
+[ext_resource type="Script" uid="uid://bhxko7cm6wc43" path="res://objects/wiring_objects/wire.gd" id="5_josim"]
+[ext_resource type="Script" uid="uid://6xv1ogkfd8da" path="res://objects/wiring_objects/print_wiring_component.gd" id="6_hddxl"]
+[ext_resource type="PackedScene" uid="uid://dd1i2f17m0erh" path="res://scenes/wiring_component_scenes/door_wiring_component.tscn" id="7_fy5x7"]
+[ext_resource type="Script" uid="uid://ba5676tgpjfxf" path="res://objects/wiring_objects/not_wiring_component.gd" id="8_o8j62"]
+
+[node name="Test Level" type="Node2D" unique_id=1821813079]
+
+[node name="ButtonWiringComponent" parent="." unique_id=1776711384 instance=ExtResource("3_wsf8r")]
+position = Vector2(52, 64)
+
+[node name="TileMapLayer" parent="." unique_id=997181669 instance=ExtResource("1_g5xp7")]
+position = Vector2(1, 0)
+tile_map_data = PackedByteArray("AAD6/wIAAgAAAAAAAAD7/wIAAgAAAAAAAAD8/wIAAgAAAAAAAAD9/wIAAgAAAAAAAAD9/wMAAgAAAAAAAAD9/wQAAgAAAAAAAAD+/wQAAgAAAAAAAAD//wQAAgAAAAAAAAAAAAQAAgAAAAAAAAABAAQAAgAAAAAAAAACAAQAAgAAAAAAAAADAAQAAgAAAAAAAAAEAAQAAgAAAAAAAAAFAAQAAgAAAAAAAAAGAAQAAgAAAAAAAAAHAAQAAgAAAAAAAAAIAAQAAgAAAAAAAAAJAAQAAgAAAAAAAAAKAAQAAgAAAAAAAAALAAQAAgAAAAAAAAAMAAQAAgAAAAAAAAAMAAMAAgAAAAAAAAAMAAIAAgAAAAAAAAAMAAEAAgAAAAAAAAANAAEAAgAAAAAAAAAOAAEAAgAAAAAAAAAPAAEAAgAAAAAAAAAQAAEAAgAAAAAAAAARAAEAAgAAAAAAAAARAAAAAgAAAAAAAAARAP//AgAAAAAAAAARAP7/AgAAAAAAAAASAP7/AgAAAAAAAAATAP7/AgAAAAAAAAAUAP7/AgAAAAAAAAAVAP7/AgAAAAAAAAAWAP7/AgAAAAAAAAA=")
+
+[node name="Player" parent="." unique_id=759590055 instance=ExtResource("2_wsf8r")]
+position = Vector2(28, 28)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=780836069]
+position = Vector2(132, 0)
+zoom = Vector2(2, 2)
+
+[node name="TestEnemy" parent="." unique_id=1601835366 instance=ExtResource("3_f077g")]
+position = Vector2(217, 8)
+
+[node name="Wire" type="Line2D" parent="." unique_id=1366210335 node_paths=PackedStringArray("output", "input")]
+points = PackedVector2Array(52, 74, 201, 71)
+default_color = Color(0, 0, 0, 1)
+script = ExtResource("5_josim")
+output = NodePath("../ButtonWiringComponent")
+input = NodePath("../NotWiringComponent")
+metadata/_custom_type_script = "uid://bhxko7cm6wc43"
+metadata/_edit_lock_ = true
+
+[node name="Wire2" type="Line2D" parent="." unique_id=1375283920 node_paths=PackedStringArray("output", "input")]
+points = PackedVector2Array(201, 71, 201, 16)
+default_color = Color(0, 0, 0, 1)
+script = ExtResource("5_josim")
+output = NodePath("../NotWiringComponent")
+input = NodePath("../DoorWiringComponent")
+metadata/_custom_type_script = "uid://bhxko7cm6wc43"
+metadata/_edit_lock_ = true
+
+[node name="PrintWiringComponent" type="Node2D" parent="." unique_id=345763123]
+position = Vector2(202, 40)
+script = ExtResource("6_hddxl")
+metadata/_custom_type_script = "uid://6xv1ogkfd8da"
+
+[node name="DoorWiringComponent" parent="." unique_id=1428165886 instance=ExtResource("7_fy5x7")]
+position = Vector2(201, 16)
+
+[node name="NotWiringComponent" type="Node2D" parent="." unique_id=1908600309]
+position = Vector2(201, 71)
+script = ExtResource("8_o8j62")
+metadata/_custom_type_script = "uid://ba5676tgpjfxf"
