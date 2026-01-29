@@ -14,7 +14,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="Test Game Project"
+config/name="Untitled Mini Metroidvania"
 run/main_scene="uid://byjpq3m0t0jvh"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
